@@ -1,0 +1,40 @@
+<div th:fragment="header-bs-4">
+    <nav class="navbar fixed-top navbar-expand-md navbar-dark navbar-toggleable bg-dark">
+        <!-- Brand -->
+        <a class="navbar-brand" href="/list">Round System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse " id="collapsibleNavbar" role="navigation">
+            <!-- Links -->
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/list">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                </li>
+
+            </ul>
+            <form class="form-inline" action="/search">
+                <div class="form-group mr-5">
+                    <input class="form-control form-control-sm bg-dark mr-2 text-white" type="text" name="name"
+                           placeholder="Поиск по игроку">
+                    <button class="btn btn-sm btn-primary" type="submit">Поиск</button>
+                </div>
+                <div th:if="${authUser==null}" class="form-group mr-2">
+                    <a class="btn btn-sm btn-outline-success mr-2" href="#" role="button"
+                       type="submit">Login</a>
+                    <a class="btn btn-sm btn-warning" href="#" role="button"
+                       type="submit">Sign-up</a>
+                </div>
+            </form>
+            <form th:unless="${authUser==null}" class="form-inline" th:action="@{/logout}" method="post">
+                <div class="form-group">
+                    <label class="text-info mr-2" th:text="${authUser.name}"></label>
+                    <button class="btn btn-sm btn-warning" type="submit">Log out</button>
+                </div>
+            </form>
+        </div>
+    </nav>
+</div>

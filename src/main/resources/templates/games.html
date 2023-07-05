@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <title>Round System</title>
+</head>
+<body id="table" style="background: black;">
+<header th:insert="~{fragment/navbar :: header-bs-4}"></header>
+<main class="container pt-5">
+
+    <h3 class="container text-center text-success p-2">Расписание игр</h3>
+    <div class="container col-8">
+        <div th:if="!${#lists.isEmpty(list)}" class="d-flex justify-content-center">
+            <table class="table table-bordered table-hover table-responsive-md table-dark text-white-50">
+                <thead>
+                <tr  class="bg-primary text-white text-center">
+                    <td colspan="8">Расписание</td>
+                <thead>
+                <tr class="bg-primary text-white">
+                    <td>N п/п</td>
+                    <td>ФИО</td>
+                    <td>Рейтинг</td>
+                    <td>Жребий</td>
+                    <td>VS</td>
+                    <td>ФИО</td>
+                    <td>Рейтинг</td>
+                    <td>Жребий</td>
+                </tr>
+                </thead>
+                </tr>
+                </thead>
+
+                <tbody th:each="game,i : ${list}" class="table-body">
+                <tr th:if="${(i.count - 1) % tour == 0}" class="bg-info text-white text-center">
+                    <td colspan="8" th:text="${i.count / tour} + 1 + ' Тур'"></td>
+                </tr>
+                <tr class="text-white-50">
+                    <td th:text="${i.count}"></td>
+                    <td th:text="${game.get(0).getName()}"></td>
+                    <td th:text="${game.get(0).getRate()}"></td>
+                    <td th:text="${game.get(0).getDraw()}"></td>
+                    <td>-</td>
+                    <td th:text="${game.get(1).getName()}"></td>
+                    <td th:text="${game.get(1).getRate()}"></td>
+                    <td th:text="${game.get(1).getDraw()}"></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <div class="d-flex justify-content-around mt-5">
+        <form th:action="@{/print}">
+            <div class="form-group">
+                <button type="submit" class="btn btn-info">Вывести на консоль</button>
+            </div>
+        </form>
+        <form th:action="@{/file}">
+            <div class="form-group">
+                <button type="submit" class="btn btn-danger">Сохранить в файл</button>
+            </div>
+        </form>
+    </div>
+</main>
+<footer th:insert="~{fragment/footer :: footer-bs-4}"></footer>
+<!-- Вариант 1: пакет jQuery и Bootstrap (включает Popper) -->
+<span th:insert="~{fragment/scripts :: scripts-bs-4-1}"></span>
+<span th:insert="~{fragment/scripts :: scripts-bs-4-2}"></span>
+</body>
+</html>

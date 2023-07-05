@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <title>Round System</title>
+</head>
+<body style="background: black;">
+<header th:insert="~{fragment/navbar :: header-bs-4}"></header>
+<main class="container pt-5">
+    <h5 class="text-warning text-center p-3">Проект <span class="text-success">Round System</span></h5>
+    <div class="container col-8">
+        <div class="row justify-content-center">
+            <p class="text-info text-justify">
+                В этом проекте реализована генерация расписания игр по круговой системе
+                с учетом домашних и гостевых встреч для любого кол-ва участников
+                с возможностью добавления игроков вручную или загрузки списка игроков из файла .xlsx,
+                а также сохранение расписания в файл .xlsx и вывод расписания в консоль.
+                При разработке использовались материалы статьи:
+            <p class="text-align-center">
+                <a  href="http://chess.sainfo.ru/tabl/tablei.html" target="_blank">
+                    "Как провести круговой турнир?"
+                </a>
+            </p>
+            </p>
+        </div>
+    </div>
+</main>
+<footer th:insert="~{fragment/footer :: footer-bs-4}"></footer>
+<span th:insert="~{fragment/scripts :: scripts-bs-4-1}"></span>
+<span th:insert="~{fragment/scripts :: scripts-bs-4-2}"></span>
+</body>
+</html>
