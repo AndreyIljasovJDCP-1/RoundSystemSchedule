@@ -20,8 +20,8 @@ public class PlayerService {
         return playerRepository.all();
     }
 
-    public List<Player> save(Player player) {
-        return playerRepository.save(player);
+    public void save(Player player) {
+        playerRepository.save(player);
     }
 
     public List<Player> draw() {
@@ -32,21 +32,29 @@ public class PlayerService {
                 ? playerRepository.all()
                 : playerRepository.all()
                 .stream()
-                .filter(s->s.getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(s -> s.getName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
     public void load() {
         schedule.load();
     }
-    public void write() {
-        schedule.write();
-    }
-    public void printTable() {
-        schedule.printTable();
+
+    public void write(String algorithm) {
+        schedule.write(algorithm);
     }
 
-    public List<List<Player>> getTableAsList() {
-        return schedule.getTableAsList();
+    public void printTable(String algorithm) {
+        if ("simple".equals(algorithm)) {
+            schedule.printSimpleTable();
+        } else {
+            schedule.printTable();
+        }
+    }
+
+    public List<List<Player>> getTableAsList(String algorithm) {
+        return "simple".equals(algorithm)
+                ? schedule.getSimpleTableAsList()
+                : schedule.getTableAsList();
     }
 }

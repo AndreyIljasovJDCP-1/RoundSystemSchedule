@@ -38,15 +38,15 @@ public class MainController {
         return "players";
     }
     @GetMapping("/table")
-    public String table(Model model) {
-        model.addAttribute("list", playerService.getTableAsList());
+    public String table(Model model,@RequestParam(name = "algorithm", required = false) String algorithm) {
+        model.addAttribute("list", playerService.getTableAsList(algorithm));
         model.addAttribute("tour", playerService.all().size()/2);
         return "games";
     }
     @GetMapping("/print")
-    public String print(Model model) {
-        playerService.printTable();
-        model.addAttribute("list", playerService.getTableAsList());
+    public String print(Model model,@RequestParam(name = "algorithm", required = false) String algorithm) {
+        playerService.printTable(algorithm);
+        model.addAttribute("list", playerService.getTableAsList(algorithm));
         model.addAttribute("tour", playerService.all().size()/2);
         return "games";
     }
@@ -57,9 +57,9 @@ public class MainController {
         return "players";
     }
     @GetMapping("/file")
-    public String file(Model model) {
-        playerService.write();
-        model.addAttribute("list", playerService.getTableAsList());
+    public String file(Model model, @RequestParam(name = "algorithm", required = false) String algorithm) {
+        playerService.write(algorithm);
+        model.addAttribute("list", playerService.getTableAsList(algorithm));
         model.addAttribute("tour", playerService.all().size()/2);
         return "games";
     }

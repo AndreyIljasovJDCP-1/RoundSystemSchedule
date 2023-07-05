@@ -211,11 +211,11 @@ public class Schedule {
     }
 
     //todo сохранить таблицу игр в файл Excel
-    public void write() {
+    public void write(String algorithm) {
         var workbook = new XSSFWorkbook();
         var sheet = createSheet(workbook);
         createHeader(workbook, sheet);
-        createCells(workbook, sheet);
+        createCells(workbook, sheet, algorithm);
         try (var outputStream = new FileOutputStream("schedule.xlsx")) {
             workbook.write(outputStream);
             workbook.close();
@@ -272,11 +272,12 @@ public class Schedule {
         headerCell.setCellStyle(headerStyle);
     }
 
-    private void createCells(XSSFWorkbook workbook, Sheet sheet) {
+    private void createCells(XSSFWorkbook workbook, Sheet sheet, String algorithm) {
         var style = workbook.createCellStyle();
 
-        var schedule = getTableAsList();
-        //var schedule = getSimpleTableAsList();
+        var schedule = "simple".equals(algorithm)
+                ? getSimpleTableAsList()
+                : getTableAsList();
         var games = playerRepository.all().size() / 2;
 
         var offset = 1;

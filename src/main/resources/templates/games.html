@@ -56,11 +56,27 @@
     <br>
     <div class="d-flex justify-content-around mt-5">
         <form th:action="@{/print}">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="algorithm" id="idRadio1" value="simple">
+                <label class="form-check-label text-primary" for="idRadio1">Simple</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="algorithm" id="idRadio2" value="home-guest" checked>
+                <label class="form-check-label text-primary" for="idRadio2">Home</label>
+            </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-info">Вывести на консоль</button>
             </div>
         </form>
         <form th:action="@{/file}">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="algorithm" id="idRadio3" value="simple">
+                <label class="form-check-label text-primary" for="idRadio3">Simple</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="algorithm" id="idRadio4" value="home-guest" checked>
+                <label class="form-check-label text-primary" for="idRadio4">Home</label>
+            </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-danger">Сохранить в файл</button>
             </div>

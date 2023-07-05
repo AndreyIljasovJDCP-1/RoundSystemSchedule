@@ -76,15 +76,23 @@
             </form>
         </div>
     </div>
-    <div th:if="!${#lists.isEmpty(list)}" class="d-flex justify-content-around mt-5">
-        <form th:action="@{/draw}">
+    <div th:if="!${#lists.isEmpty(list)}" class="d-flex justify-content-center mt-5">
+        <form class="form-inline mr-5" th:action="@{/draw}">
             <div class="form-group">
                 <button type="submit" class="btn btn-info">Жеребьевка</button>
             </div>
         </form>
 
 
-        <form th:action="@{/table}">
+        <form class="form-inline" th:action="@{/table}">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="algorithm" id="idRadio5" value="simple">
+                <label class="form-check-label text-primary" for="idRadio5">Simple</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="algorithm" id="idRadio6" value="home-guest" checked>
+                <label class="form-check-label text-primary" for="idRadio6">Home</label>
+            </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Расписание</button>
             </div>
