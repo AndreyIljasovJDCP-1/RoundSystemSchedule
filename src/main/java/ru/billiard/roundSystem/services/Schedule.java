@@ -46,46 +46,6 @@ public class Schedule {
         }
     }
 
-    public void printTable() {
-        int[][][] gameTable = generateTable();
-        List<Player> playerList = playerRepository.all();
-        int amountPlayers = playerList.size();
-        int amountTours = amountPlayers - 1;
-        int amountGamesInTour = amountPlayers / 2;
-        for (int i = 0; i < amountTours; i++) {
-            System.out.printf("       %d  Тур.%n", i + 1);
-            for (int j = 0; j < amountGamesInTour; j++) {
-                int home = gameTable[i][j][0];
-                int guest = gameTable[i][j][1];
-                System.out.printf("%d. %s - %s%n", j + 1,
-                        playerList.get(home - 1),
-                        playerList.get(guest - 1));
-            }
-        }
-    }
-
-    /**
-     * Формирование листа пар игроков по всем играм
-     * @return List пар игроков по играм
-     */
-    public List<List<Player>> getTableAsList() {
-        int[][][] gameTable = generateTable();
-        List<Player> playerList = playerRepository.all();
-        List<List<Player>> schedule = new ArrayList<>();
-        int amountPlayers = playerList.size();
-        int amountTours = amountPlayers - 1;
-        int amountGamesInTour = amountPlayers / 2;
-        for (int i = 0; i < amountTours; i++) {
-
-            for (int j = 0; j < amountGamesInTour; j++) {
-                int home = gameTable[i][j][0];
-                int guest = gameTable[i][j][1];
-                schedule.add(new ArrayList<>(List.of(
-                        playerList.get(home - 1), playerList.get(guest - 1))));
-            }
-        }
-        return schedule;
-    }
 
     /**
      * Составление расписания турнира по круговой системе 1 круг,
@@ -140,7 +100,48 @@ public class Schedule {
         }
         return gameTable;
     }
-    //todo Алгоритм пересмотреть
+
+    /**
+     * Формирование листа пар игроков по всем играм
+     *
+     * @return List пар игроков по играм
+     */
+    public List<List<Player>> getTableAsList() {
+        int[][][] gameTable = generateTable();
+        List<Player> playerList = playerRepository.all();
+        List<List<Player>> schedule = new ArrayList<>();
+        int amountPlayers = playerList.size();
+        int amountTours = amountPlayers - 1;
+        int amountGamesInTour = amountPlayers / 2;
+        for (int i = 0; i < amountTours; i++) {
+
+            for (int j = 0; j < amountGamesInTour; j++) {
+                int home = gameTable[i][j][0];
+                int guest = gameTable[i][j][1];
+                schedule.add(new ArrayList<>(List.of(
+                        playerList.get(home - 1), playerList.get(guest - 1))));
+            }
+        }
+        return schedule;
+    }
+
+    public void printTable() {
+        int[][][] gameTable = generateTable();
+        List<Player> playerList = playerRepository.all();
+        int amountPlayers = playerList.size();
+        int amountTours = amountPlayers - 1;
+        int amountGamesInTour = amountPlayers / 2;
+        for (int i = 0; i < amountTours; i++) {
+            System.out.printf("       %d  Тур.%n", i + 1);
+            for (int j = 0; j < amountGamesInTour; j++) {
+                int home = gameTable[i][j][0];
+                int guest = gameTable[i][j][1];
+                System.out.printf("%d. %s - %s%n", j + 1,
+                        playerList.get(home - 1),
+                        playerList.get(guest - 1));
+            }
+        }
+    }
 
     /**
      * 1 всегда дома, простая схема
@@ -148,43 +149,65 @@ public class Schedule {
      * без учета домашних и гостевых встреч.
      * Сделано с помощью 3-х мерного массива и Deque.
      * Алгоритм поворот по часовой стрелке, см.
-     * <a href="https://b2b.partcommunity.com/community/
-     * knowledge/ru/detail/9893/%D0%9A%D1%80%D1%83%D0%B3%D0%BE%D0%B2%D0%B0%D1%8F
-     * +%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0#knowledge_article">круговая система</a>
+     * <a href="https://youtu.be/MLf67p2Darc">
+     * круговая система</a>
      */
-    public int[][][] generateSimpleTable() {
+    public List<List<Player>> getSimpleTableAsList() {
         if (playerRepository.all().size() % 2 != 0) {
             playerRepository.save(new Player("пропуск", 0));
         }
-        int amountPlayers = playerRepository.all().size();
+        var playerList = playerRepository.all();
+        int amountPlayers = playerList.size();
         int amountTours = amountPlayers - 1;
         int amountGameInTour = amountPlayers / 2;
-        int[][][] gameTable = new int[amountGameInTour][amountTours][2];
+        int[][] gameTable = new int[amountGameInTour][2];
         Deque<Integer> deque = new ArrayDeque<>();
-
-        for (int i = amountTours + 1; i >= 2; i--) {
-            deque.addLast(i);
+        List<List<Player>> schedule = new ArrayList<>();
+        // заполним очередь
+        for (int i = 2; i <= amountPlayers; i++) {
+            deque.offerFirst(i);
         }
-
+        gameTable[0][0] = 1;
         for (int j = 0; j < amountTours; j++) {
-            for (int i = 0; i < amountTours; i++) {
+
+            for (int i = 0; i < amountGameInTour; i++) {
                 int next = deque.pollFirst();
-                if (i == 0) {
-                    gameTable[i][j][0] = (i + 1);
-                    gameTable[i][j][1] = next;
-                } else if (i < amountGameInTour) {
-                    gameTable[i][j][1] = next;
-                } else {
-                    gameTable[amountTours - i][j][0] = next;
-                }
+                gameTable[i][1] = next;
                 deque.offerLast(next);
-                if (i == amountTours - 1) {
-                    int offset = deque.pollLast();
-                    deque.offerFirst(offset);
-                }
+            }
+            for (int i = amountGameInTour - 1; i > 0; i--) {
+                int next = deque.pollFirst();
+                gameTable[i][0] = next;
+                deque.offerLast(next);
+            }
+
+            for (int i = 0; i < amountGameInTour; i++) {
+                int home = gameTable[i][0];
+                int guest = gameTable[i][1];
+                schedule.add(new ArrayList<>(List.of(playerList.get(home - 1), playerList.get(guest - 1))));
+            }
+            deque.offerFirst(deque.pollLast());
+
+        }
+        return schedule;
+    }
+
+    public void printSimpleTable() {
+        var summary = getSimpleTableAsList();
+        List<Player> playerList = playerRepository.all();
+        int amountPlayers = playerList.size();
+        int amountTours = amountPlayers - 1;
+        int amountGamesInTour = amountPlayers / 2;
+        int count = 0;
+        for (int i = 0; i < amountTours; i++) {
+            System.out.printf("       %d  Тур.%n", i + 1);
+            for (int j = 0; j < amountGamesInTour; j++) {
+                System.out.printf("%d. %s - %s%n", j + 1,
+                        summary.get(count).get(0),
+                        summary.get(count++).get(1));
+
             }
         }
-        return gameTable;
     }
 
     //todo сохранить таблицу игр в файл Excel
@@ -253,6 +276,7 @@ public class Schedule {
         var style = workbook.createCellStyle();
 
         var schedule = getTableAsList();
+        //var schedule = getSimpleTableAsList();
         var games = playerRepository.all().size() / 2;
 
         var offset = 1;
