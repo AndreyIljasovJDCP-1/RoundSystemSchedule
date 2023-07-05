@@ -37,11 +37,10 @@ public class PlayerRepository {
         return playerList;
     }
 
-    public List<Player> save(Player player) {
+    public void save(Player player) {
         if (!playerList.contains(player)) {
             playerList.add(player);
+            playerList.sort(null);
         }
-        playerList.sort(null);
-        return playerList;
     }
 }
