@@ -37,17 +37,23 @@ public class MainController {
         model.addAttribute("list", playerService.draw());
         return "players";
     }
+    @GetMapping("/select")
+    public String select(Model model, @RequestParam(name = "algorithm") String algorithm) {
+        playerService.selectSchedule(algorithm);
+        model.addAttribute("list", playerService.all());
+        return "players";
+    }
     @GetMapping("/table")
-    public String table(Model model,@RequestParam(name = "algorithm", required = false) String algorithm) {
-        model.addAttribute("list", playerService.getTableAsList(algorithm));
-        model.addAttribute("tour", playerService.all().size()/2);
+    public String table(Model model) {
+        model.addAttribute("list", playerService.getTableAsList());
+        model.addAttribute("gamesInTour", playerService.all().size()/2);
         return "games";
     }
     @GetMapping("/print")
-    public String print(Model model,@RequestParam(name = "algorithm", required = false) String algorithm) {
-        playerService.printTable(algorithm);
-        model.addAttribute("list", playerService.getTableAsList(algorithm));
-        model.addAttribute("tour", playerService.all().size()/2);
+    public String print(Model model) {
+        playerService.printTable();
+        model.addAttribute("list", playerService.getTableAsList());
+        model.addAttribute("gamesInTour", playerService.all().size()/2);
         return "games";
     }
     @GetMapping("/load")
@@ -57,10 +63,10 @@ public class MainController {
         return "players";
     }
     @GetMapping("/file")
-    public String file(Model model, @RequestParam(name = "algorithm", required = false) String algorithm) {
-        playerService.write(algorithm);
-        model.addAttribute("list", playerService.getTableAsList(algorithm));
-        model.addAttribute("tour", playerService.all().size()/2);
+    public String file(Model model) {
+        playerService.write();
+        model.addAttribute("list", playerService.getTableAsList());
+        model.addAttribute("gamesInTour", playerService.all().size()/2);
         return "games";
     }
     @PostMapping("/add")

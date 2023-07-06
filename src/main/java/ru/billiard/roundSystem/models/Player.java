@@ -17,11 +17,11 @@ public class Player implements Comparable<Player>{
     }
 
     public Player(String name) {
-        this(name,750);
+        this(name,0);
     }
     @Override
     public String toString() {
-        return name + "(" + rate + ")";
+        return name + "(" + rate + ")[" + draw + "]";
     }
 
     /**

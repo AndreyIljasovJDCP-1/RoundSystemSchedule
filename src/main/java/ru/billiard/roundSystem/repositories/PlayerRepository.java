@@ -18,10 +18,18 @@ public class PlayerRepository {
         return playerList;
     }
 
-    public List<Player> draw() {
-        if (playerList.size() % 2 != 0) {
-            playerList.add(new Player("пропуск",0));
+    public void save(Player player) {
+        if (!playerList.contains(player)) {
+            playerList.add(player);
+            playerList.sort(null);
         }
+    }
+
+    public void saveAll(List<Player> newList) {
+        playerList.addAll(newList);
+        playerList.sort(null);
+    }
+    public List<Player> draw() {
         Set<Integer> drawSet = new HashSet<>();
         for (Player player : playerList) {
             boolean flag = false;
@@ -37,10 +45,5 @@ public class PlayerRepository {
         return playerList;
     }
 
-    public void save(Player player) {
-        if (!playerList.contains(player)) {
-            playerList.add(player);
-            playerList.sort(null);
-        }
-    }
+
 }
