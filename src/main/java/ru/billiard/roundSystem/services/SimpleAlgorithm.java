@@ -19,13 +19,13 @@ public class SimpleAlgorithm implements Schedule {
      * 1 всегда дома, простая схема
      * Составление расписания турнира по круговой системе 1 круг,
      * без учета домашних и гостевых встреч.
-     * Сделано с помощью 3-х мерного массива и Deque.
+     * Сделано с помощью 2-х мерного массива и Deque.
      * Алгоритм поворот по часовой стрелке, см.
      * <a href="https://youtu.be/MLf67p2Darc">
      * круговая система</a>
      */
     @Override
-    public List<List<Player>> getScheduleAsList(List<Player> playerList) {
+    public List<List<Player>> getSchedule(List<Player> playerList) {
         int players = playerList.size();
         int tours = players - 1;
         int gamesInTour = players / 2;
@@ -53,8 +53,10 @@ public class SimpleAlgorithm implements Schedule {
             for (int i = 0; i < gamesInTour; i++) {
                 int home = gameTable[i][0];
                 int guest = gameTable[i][1];
-                schedule.add(new ArrayList<>(
-                        List.of(playerList.get(home - 1), playerList.get(guest - 1))));
+                schedule.add(List.of(
+                        playerList.get(home - 1),
+                        playerList.get(guest - 1)
+                ));
             }
             deque.offerFirst(deque.pollLast());
         }
@@ -63,7 +65,7 @@ public class SimpleAlgorithm implements Schedule {
 
     @Override
     public void printSchedule(List<Player> playerList) {
-        var scheduleAsList = getScheduleAsList(playerList);
+        var scheduleAsList = getSchedule(playerList);
         int players = playerList.size();
         int tours = players - 1;
         int gamesInTour = players / 2;

@@ -45,14 +45,14 @@ public class MainController {
     }
     @GetMapping("/table")
     public String table(Model model) {
-        model.addAttribute("list", playerService.getTableAsList());
+        model.addAttribute("list", playerService.getTable());
         model.addAttribute("gamesInTour", playerService.all().size()/2);
         return "games";
     }
     @GetMapping("/print")
     public String print(Model model) {
         playerService.printTable();
-        model.addAttribute("list", playerService.getTableAsList());
+        model.addAttribute("list", playerService.getTable());
         model.addAttribute("gamesInTour", playerService.all().size()/2);
         return "games";
     }
@@ -64,10 +64,16 @@ public class MainController {
     }
     @GetMapping("/file")
     public String file(Model model) {
-        playerService.write();
-        model.addAttribute("list", playerService.getTableAsList());
+        playerService.save();
+        model.addAttribute("list", playerService.getTable());
         model.addAttribute("gamesInTour", playerService.all().size()/2);
         return "games";
+    }
+    @GetMapping("/delete")
+    public String delete(Model model, @RequestParam(name = "name") String name) {
+        playerService.delete(name);
+        model.addAttribute("list", playerService.all());
+        return "players";
     }
     @PostMapping("/add")
     public String add(Model model, Player player) {

@@ -36,7 +36,7 @@
 
                 <tbody th:each="game,i : ${list}" class="table-body">
                 <tr th:if="${(i.count - 1) % gamesInTour == 0}" class="bg-info text-white text-center">
-                    <td colspan="8" th:text="${i.count / gamesInTour} + 1 + ' Тур'"></td>
+                    <td colspan="8" th:text="${(i.count - 1) / gamesInTour} + 1 + ' Тур'"></td>
                 </tr>
                 <tr class="text-white-50">
                     <td th:text="${i.count}"></td>

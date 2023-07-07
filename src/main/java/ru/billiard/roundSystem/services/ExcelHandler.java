@@ -8,7 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import ru.billiard.roundSystem.ExcelHandler;
+import ru.billiard.roundSystem.FileHandler;
 import ru.billiard.roundSystem.models.Player;
 
 import java.io.FileInputStream;
@@ -20,12 +20,12 @@ import java.util.List;
 
 @Component
 @NoArgsConstructor
-public class ExcelIO implements ExcelHandler {
+public class ExcelHandler implements FileHandler {
 
     private static final Resource XLSX_FILE = new ClassPathResource("static/list.xlsx");
 
     @Override
-    public List<Player> load() {
+    public List<Player> read() {
         List<Player> list = new ArrayList<>();
         try (FileInputStream fis = new FileInputStream(XLSX_FILE.getFile())) {
             XSSFWorkbook workbook = new XSSFWorkbook(fis);

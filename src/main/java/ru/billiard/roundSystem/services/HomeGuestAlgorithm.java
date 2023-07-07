@@ -17,7 +17,7 @@ public class HomeGuestAlgorithm implements Schedule {
      * @return List пар игроков по играм
      */
     @Override
-    public List<List<Player>> getScheduleAsList(List<Player> playerList) {
+    public List<List<Player>> getSchedule(List<Player> playerList) {
         int[][][] gameTable = generateTable(playerList);
         List<List<Player>> schedule = new ArrayList<>();
         int players = playerList.size();
@@ -28,8 +28,10 @@ public class HomeGuestAlgorithm implements Schedule {
             for (int j = 0; j < gamesInTour; j++) {
                 int home = gameTable[i][j][0];
                 int guest = gameTable[i][j][1];
-                schedule.add(new ArrayList<>(List.of(
-                        playerList.get(home - 1), playerList.get(guest - 1))));
+                schedule.add(List.of(
+                        playerList.get(home - 1),
+                        playerList.get(guest - 1)
+                ));
             }
         }
         return schedule;

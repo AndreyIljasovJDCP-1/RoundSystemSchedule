@@ -1,8 +1,10 @@
 package ru.billiard.roundSystem.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import ru.billiard.roundSystem.ExcelHandler;
+import ru.billiard.roundSystem.FileHandler;
 import ru.billiard.roundSystem.Schedule;
 import ru.billiard.roundSystem.models.Player;
 import ru.billiard.roundSystem.repositories.PlayerRepository;
@@ -15,15 +17,18 @@ public class PlayerService {
 
     @Autowired
     PlayerRepository playerRepository;
-
-    Schedule schedule = new SimpleAlgorithm();
     @Autowired
-    ExcelHandler excelHandler;
+    ApplicationContext applicationContext;
+    @Autowired
+    @Qualifier("simpleAlgorithm")
+    Schedule schedule;
+    @Autowired
+    FileHandler fileHandler;
 
     public void selectSchedule(String algorithm) {
         schedule = "simple".equals(algorithm)
-                ? new SimpleAlgorithm()
-                : new HomeGuestAlgorithm();
+                ? applicationContext.getBean(SimpleAlgorithm.class)
+                : applicationContext.getBean(HomeGuestAlgorithm.class);
     }
 
     public List<Player> all() {
@@ -51,23 +56,28 @@ public class PlayerService {
     }
 
     public void load() {
-        playerRepository.saveAll(excelHandler.load());
+        playerRepository.saveAll(fileHandler.read());
     }
 
-    public void write() {
-        int gamesInTour = playerRepository.all().size() / 2;
-        var listSchedule = schedule.getScheduleAsList(playerRepository.all());
-        excelHandler.write(listSchedule, gamesInTour);
+    public void save() {
+        var playerList = playerRepository.all();
+        int gamesInTour = playerList.size() / 2;
+        var listSchedule = schedule.getSchedule(playerList);
+        fileHandler.write(listSchedule, gamesInTour);
     }
 
-    public List<List<Player>> getTableAsList() {
+    public List<List<Player>> getTable() {
         if (playerRepository.all().size() % 2 != 0) {
             playerRepository.save(new Player("пропуск"));
         }
-        return schedule.getScheduleAsList(playerRepository.all());
+        return schedule.getSchedule(playerRepository.all());
     }
 
     public void printTable() {
         schedule.printSchedule(playerRepository.all());
+    }
+
+    public void delete(String name) {
+        playerRepository.delete(name);
     }
 }

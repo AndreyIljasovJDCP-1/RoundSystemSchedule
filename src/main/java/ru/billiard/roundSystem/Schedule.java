@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface Schedule {
 
-    List<List<Player>> getScheduleAsList(List<Player> playerList);
+    List<List<Player>> getSchedule(List<Player> playerList);
     void printSchedule(List<Player> playerList);
 }

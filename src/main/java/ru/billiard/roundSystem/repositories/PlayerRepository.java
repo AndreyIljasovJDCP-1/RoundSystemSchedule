@@ -26,6 +26,7 @@ public class PlayerRepository {
     }
 
     public void saveAll(List<Player> newList) {
+        playerList.clear();
         playerList.addAll(newList);
         playerList.sort(null);
     }
@@ -46,4 +47,7 @@ public class PlayerRepository {
     }
 
 
+    public void delete(String name) {
+        playerList.removeIf(player -> player.getName().contains(name));
+    }
 }
