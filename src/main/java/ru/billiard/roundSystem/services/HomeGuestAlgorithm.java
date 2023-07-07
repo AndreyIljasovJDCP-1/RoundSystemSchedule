@@ -7,8 +7,8 @@ import ru.billiard.roundSystem.models.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-@Component
-@NoArgsConstructor
+
+@Component("home-guest")
 public class HomeGuestAlgorithm implements Schedule {
 
     /**

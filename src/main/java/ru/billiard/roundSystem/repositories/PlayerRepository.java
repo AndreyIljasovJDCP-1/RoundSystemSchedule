@@ -19,6 +19,7 @@ public class PlayerRepository {
     }
 
     public void save(Player player) {
+        playerList.removeIf(pl -> "пропуск".equals(pl.getName()));
         if (!playerList.contains(player)) {
             playerList.add(player);
             playerList.sort(null);
@@ -48,6 +49,6 @@ public class PlayerRepository {
 
 
     public void delete(String name) {
-        playerList.removeIf(player -> player.getName().contains(name));
+        playerList.removeIf(player -> player.getName().contains(name) || "пропуск".equals(player.getName()));
     }
 }

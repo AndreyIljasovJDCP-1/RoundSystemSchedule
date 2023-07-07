@@ -1,6 +1,5 @@
 package ru.billiard.roundSystem.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -14,21 +13,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class PlayerService {
+    private final PlayerRepository playerRepository;
+    private final ApplicationContext applicationContext;
+    private Schedule schedule;
+    private final FileHandler fileHandler;
+    //IoC, 1 конструктор @Autowired не обязателен,
+    public PlayerService(
+            PlayerRepository playerRepository,
+            ApplicationContext applicationContext,
+            @Qualifier("simple") Schedule schedule,
+            FileHandler fileHandler
+    ) {
+        this.playerRepository = playerRepository;
+        this.applicationContext = applicationContext;
+        this.schedule = schedule;
+        this.fileHandler = fileHandler;
+    }
 
-    @Autowired
-    PlayerRepository playerRepository;
-    @Autowired
-    ApplicationContext applicationContext;
-    @Autowired
-    @Qualifier("simpleAlgorithm")
-    Schedule schedule;
-    @Autowired
-    FileHandler fileHandler;
-
-    public void selectSchedule(String algorithm) {
-        schedule = "simple".equals(algorithm)
-                ? applicationContext.getBean(SimpleAlgorithm.class)
-                : applicationContext.getBean(HomeGuestAlgorithm.class);
+    public void setAlgorithmSchedule(String algorithm) {
+        schedule = applicationContext.getBean(algorithm, Schedule.class);
     }
 
     public List<Player> all() {
@@ -40,9 +43,7 @@ public class PlayerService {
     }
 
     public List<Player> draw() {
-        if (playerRepository.all().size() % 2 != 0) {
-            playerRepository.save(new Player("пропуск"));
-        }
+        checkPlayerList();
         return playerRepository.draw();
     }
 
@@ -67,9 +68,7 @@ public class PlayerService {
     }
 
     public List<List<Player>> getTable() {
-        if (playerRepository.all().size() % 2 != 0) {
-            playerRepository.save(new Player("пропуск"));
-        }
+        checkPlayerList();
         return schedule.getSchedule(playerRepository.all());
     }
 
@@ -79,5 +78,11 @@ public class PlayerService {
 
     public void delete(String name) {
         playerRepository.delete(name);
+    }
+
+    private void checkPlayerList(){
+        if (playerRepository.all().size() % 2 != 0) {
+            playerRepository.save(new Player("пропуск"));
+        }
     }
 }

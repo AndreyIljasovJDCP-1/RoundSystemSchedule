@@ -1,7 +1,7 @@
 package ru.billiard.roundSystem.controllers;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +10,9 @@ import ru.billiard.roundSystem.services.PlayerService;
 
 @Controller
 @RequestMapping("/")
+@AllArgsConstructor
 public class MainController {
-    @Autowired
-    PlayerService playerService;
+    private final PlayerService playerService;
 
     @GetMapping("/")
     public String start() {
@@ -39,7 +39,7 @@ public class MainController {
     }
     @GetMapping("/select")
     public String select(Model model, @RequestParam(name = "algorithm") String algorithm) {
-        playerService.selectSchedule(algorithm);
+        playerService.setAlgorithmSchedule(algorithm);
         model.addAttribute("list", playerService.all());
         return "players";
     }

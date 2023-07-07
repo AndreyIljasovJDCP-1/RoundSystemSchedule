@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 
 @Component
-@NoArgsConstructor
 public class ExcelHandler implements FileHandler {
 
     private static final Resource XLSX_FILE = new ClassPathResource("static/list.xlsx");

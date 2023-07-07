@@ -10,10 +10,8 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-@Component
-@NoArgsConstructor
+@Component("simple")
 public class SimpleAlgorithm implements Schedule {
-
 
     /**
      * 1 всегда дома, простая схема
