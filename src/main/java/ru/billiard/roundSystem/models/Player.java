@@ -1,12 +1,21 @@
 package ru.billiard.roundSystem.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-public class Player implements Comparable<Player>{
 
+@Data
+@Entity
+@NoArgsConstructor
+public class Player implements Comparable<Player> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
     private int rate;
     private int draw;
@@ -26,7 +35,8 @@ public class Player implements Comparable<Player>{
 
     /**
      * Реализация compareTo сравнение в порядке убывания по рейтингу,
-     * а после по имени.
+     * а после по имени по возрастанию.
+     *
      * @param o the object to be compared.
      * @return -1 ,0,1
      */

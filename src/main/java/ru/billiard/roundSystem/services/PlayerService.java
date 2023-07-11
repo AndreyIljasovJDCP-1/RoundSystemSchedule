@@ -2,24 +2,31 @@ package ru.billiard.roundSystem.services;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.billiard.roundSystem.FileHandler;
 import ru.billiard.roundSystem.Schedule;
 import ru.billiard.roundSystem.models.Player;
-import ru.billiard.roundSystem.repositories.PlayerRepository;
+import ru.billiard.roundSystem.repositories.JpaPlayerRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class PlayerService {
-    private final PlayerRepository playerRepository;
+    private static final Sort RATE_SORT = Sort.by(Sort.Direction.DESC, "rate")
+            .and(Sort.by(Sort.Direction.ASC, "name"));
+    private static final Sort DRAW_SORT = Sort.by(Sort.Direction.ASC, "draw");
+    private static final Random RANDOM = new Random();
+    private final JpaPlayerRepository playerRepository;
     private final ApplicationContext applicationContext;
     private Schedule schedule;
     private final FileHandler fileHandler;
+    private boolean ranked = false;
+
     //IoC, 1 конструктор @Autowired не обязателен,
     public PlayerService(
-            PlayerRepository playerRepository,
+            JpaPlayerRepository playerRepository,
             ApplicationContext applicationContext,
             @Qualifier("simple") Schedule schedule,
             FileHandler fileHandler
@@ -35,25 +42,42 @@ public class PlayerService {
     }
 
     public List<Player> all() {
-        return playerRepository.all();
+        //return playerRepository.findAllByOrderByRateDescNameAsc();
+        return playerRepository.findAll(ranked ? DRAW_SORT : RATE_SORT);
     }
 
+    @Transactional
     public void save(Player player) {
-        playerRepository.save(player);
+        if (!playerRepository.existsByName(player.getName())) {
+            playerRepository.deleteByName("пропуск");
+            playerRepository.save(player);
+            ranked = false;
+        }
     }
 
-    public List<Player> draw() {
+    public void draw() {
         checkPlayerList();
-        return playerRepository.draw();
+        var playerList = playerRepository.findAll();
+        Set<Integer> drawSet = new HashSet<>();
+        for (Player player : playerList) {
+            boolean flag = false;
+            do {
+                int choice = RANDOM.nextInt(playerList.size()) + 1;
+                if (drawSet.add(choice)) {
+                    player.setDraw(choice);
+                    flag = true;
+                }
+            } while (!flag);
+        }
+        playerRepository.deleteAll();
+        playerRepository.saveAll(playerList);
+        ranked = true;
     }
 
     public List<Player> search(String name) {
         return name.isEmpty()
-                ? playerRepository.all()
-                : playerRepository.all()
-                .stream()
-                .filter(s -> s.getName().toLowerCase().contains(name.toLowerCase()))
-                .collect(Collectors.toList());
+                ? playerRepository.findAll(ranked ? DRAW_SORT : RATE_SORT)
+                : playerRepository.findByNameContaining(name).orElseThrow();
     }
 
     public void load() {
@@ -61,7 +85,7 @@ public class PlayerService {
     }
 
     public void save() {
-        var playerList = playerRepository.all();
+        var playerList = playerRepository.findAll(ranked ? DRAW_SORT : RATE_SORT);
         int gamesInTour = playerList.size() / 2;
         var listSchedule = schedule.getSchedule(playerList);
         fileHandler.write(listSchedule, gamesInTour);
@@ -69,20 +93,26 @@ public class PlayerService {
 
     public List<List<Player>> getTable() {
         checkPlayerList();
-        return schedule.getSchedule(playerRepository.all());
+        return schedule.getSchedule(playerRepository.findAll(ranked ? DRAW_SORT : RATE_SORT));
     }
 
     public void printTable() {
-        schedule.printSchedule(playerRepository.all());
+        schedule.printSchedule(playerRepository.findAll(ranked ? DRAW_SORT : RATE_SORT));
     }
 
+    @Transactional
     public void delete(String name) {
-        playerRepository.delete(name);
+        if (playerRepository.existsByName(name)) {
+            playerRepository.deleteByName("пропуск");
+            playerRepository.deleteByName(name);
+            ranked = false;
+        }
     }
 
     private void checkPlayerList(){
-        if (playerRepository.all().size() % 2 != 0) {
+        if (playerRepository.findAll().size() % 2 != 0) {
             playerRepository.save(new Player("пропуск"));
+            ranked = false;
         }
     }
 }

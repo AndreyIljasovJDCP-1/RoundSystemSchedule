@@ -34,7 +34,8 @@ public class MainController {
     }
     @GetMapping("/draw")
     public String draw(Model model) {
-        model.addAttribute("list", playerService.draw());
+        playerService.draw();
+        model.addAttribute("list", playerService.all());
         return "players";
     }
     @GetMapping("/select")
