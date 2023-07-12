@@ -13,7 +13,7 @@ public interface JpaPlayerRepository extends JpaRepository<Player, Long> {
     Optional<List<Player>> findByNameContaining(String name);
 
     //List<Player> findAllByOrderByRateDescNameAsc();
-    boolean existsByName(String name);
+    //boolean existsByName(String name);
 
     void deleteByName(String name);
 }
